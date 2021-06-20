@@ -662,7 +662,6 @@ export function initialize() {
         if (!$(e.target).is("a")) {
             e.stopPropagation();
         }
-        // Still hide the popovers, however
         popovers.hide_all();
     }
 
