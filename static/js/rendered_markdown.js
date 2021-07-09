@@ -132,7 +132,11 @@ export const update_elements = (content) => {
                 // If the stream has been deleted,
                 // stream_data.maybe_get_stream_name might return
                 // undefined.  Otherwise, display the current stream name.
-                $(this).text("#" + stream_name);
+                let stream_icon = "#";
+                if (stream_data.get_invite_only(stream_name)) {
+                    stream_icon = "<i class='fa fa-lock' aria-hidden='true'></i>";
+                }
+                $(this).html(stream_icon + " " + stream_name);
             }
         }
     });
@@ -148,7 +152,11 @@ export const update_elements = (content) => {
                 // stream_data.maybe_get_stream_name might return
                 // undefined.  Otherwise, display the current stream name.
                 const text = $(this).text();
-                $(this).text("#" + stream_name + text.slice(text.indexOf(" > ")));
+                let stream_icon = "#";
+                if (stream_data.get_invite_only(stream_name)) {
+                    stream_icon = "<i class='fa fa-lock' aria-hidden='true'></i>";
+                }
+                $(this).html(stream_icon + " " + stream_name + text.slice(text.indexOf(" > ")));
             }
         }
     });
