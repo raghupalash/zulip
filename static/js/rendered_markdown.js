@@ -134,7 +134,7 @@ export const update_elements = (content) => {
                 // undefined.  Otherwise, display the current stream name.
                 let stream_icon = "#";
                 if (stream_data.get_invite_only(stream_name)) {
-                    stream_icon = "<i class='fa fa-lock' aria-hidden='true'></i>";
+                    stream_icon = $("<i>", {class: "fa fa-lock"});
                 }
                 $(this).html(stream_icon + " " + stream_name);
             }
