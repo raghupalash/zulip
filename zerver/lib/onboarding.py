@@ -78,30 +78,28 @@ def send_initial_pms(user: UserProfile) -> None:
 
     content = "".join(
         [
-            welcome_msg + "\n\n",
+            welcome_msg + " ",
             _("This is a private message from me, Welcome Bot.") + " ",
-            _("Here are some tips to get you started:") + "\n",
-            "* " + _("Download our [Desktop and mobile apps]({apps_url})") + "\n",
-            "* "
-            + _("Customize your account and notifications on your [Settings page]({settings_url})")
+            _("If you are new to Zulip, check out our [Getting started guide]({getting_started_url})!") 
+            + "\n\n",
+            _("I can help you get set up! Just click anywhere on this message or press `r` to reply.")
             + "\n",
-            "* "
-            + _("Type `?` to check out Zulip's keyboard shortcuts")
-            + "\n {organization_setup_text}\n",
-            _("The most important shortcut is `r` to reply.") + "\n\n",
-            _("Practice sending a few messages by replying to this conversation.") + " ",
             _(
-                "If you're not into keyboards, that's okay too; "
-                "clicking anywhere on this message will also do the trick!"
+                "Here are a few messages I understand: **\"apps\"**, **\"edit profile\"**, "
+                "**\"dark mode\"**, **\"light mode\"**, **\"streams\"**, and **\"topics\"**."
+            )
+            + "\n\n",
+            _(
+                "If you would like more help, send **\"help\"**, "
+                "or type `?` to learn about Zulip’s keyboard shortcuts."
             ),
         ]
     )
 
     content = content.format(
-        apps_url="/apps",
-        settings_url="#settings",
         organization_setup_text=organization_setup_text,
         demo_org_help_url="/help/demo-organizations",
+        getting_started_url ="https://zulip.com/help/getting-started-with-zulip",
     )
 
     internal_send_private_message(
@@ -113,18 +111,28 @@ def send_welcome_bot_response(send_request: SendMessageRequest) -> None:
     welcome_bot = get_system_bot(settings.WELCOME_BOT, send_request.message.sender.realm_id)
     human_recipient_id = send_request.message.sender.recipient_id
     assert human_recipient_id is not None
+    human_response = send_request.rendering_result.rendered_content.lower()
+    content = ""
     if Message.objects.filter(sender=welcome_bot, recipient_id=human_recipient_id).count() < 2:
-        content = (
-            _("Congratulations on your first reply!") + " "
-            ":tada:"
-            "\n"
-            "\n"
-            + _(
-                "Feel free to continue using this space to practice your new messaging "
-                "skills. Or, try clicking on some of the stream names to your left!"
-            )
+        content += _("Congratulations on your first reply!") + " " + ":tada:\n\n"
+    if 'apps' in human_response:
+        content += _(
+            "You can [download](/apps) the [mobile and desktop apps](/apps). "
+            "Zulip also works great in a browser."
         )
-        internal_send_private_message(welcome_bot, send_request.message.sender, content)
+    elif 'edit profile' in human_response:
+        content += _(
+            "Go to [Profile settings](#settings/profile) "
+            "to add a [profile picture](https://zulip.com/help/change-your-profile-picture) "
+            "and edit your [profile information](https://zulip.com/help/edit-your-profile)."
+        )
+    else:
+        content += _(
+            "I’m sorry, I did not understand your message. Please try one of the following commands: "
+            "**\"apps\"**, **\"edit profile\"**, **\"dark mode\"**, **\"light mode\"**, "
+            "**\"streams\"**, and **\"topics\"**."
+        )
+    internal_send_private_message(welcome_bot, send_request.message.sender, content)
 
 
 @transaction.atomic
