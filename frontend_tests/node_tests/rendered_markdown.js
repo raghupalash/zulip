@@ -219,6 +219,8 @@ run_test("stream-links", () => {
     // Setup
     const $content = get_content_element();
     const $stream = $.create("a.stream");
+    const $icon = $.create("span.icon");
+    const $text = $.create("span.text");
     $stream.set_find_results(".highlight", false);
     $stream.attr("data-stream-id", stream.stream_id);
     const $stream_topic = $.create("a.stream-topic");
@@ -226,7 +228,11 @@ run_test("stream-links", () => {
     $stream_topic.attr("data-stream-id", stream.stream_id);
     $stream_topic.text("#random > topic name > still the topic name");
     $content.set_find_results("a.stream", $array([$stream]));
+    $stream.set_find_results("span.icon", $icon);
+    $stream.set_find_results("span.text", $text);
     $content.set_find_results("a.stream-topic", $array([$stream_topic]));
+    $stream_topic.set_find_results("span.icon", $icon);
+    $stream_topic.set_find_results("span.text", $text);
 
     // Initial asserts
     assert.equal($stream.text(), "never-been-set");
