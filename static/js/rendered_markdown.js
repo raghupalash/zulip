@@ -134,7 +134,17 @@ export const update_elements = (content) => {
                 // If the stream has been deleted,
                 // stream_data.maybe_get_stream_name might return
                 // undefined.  Otherwise, display the current stream name.
-                $(this).text("#" + stream_name);
+                let stream_icon = "#";
+                if (stream_data.is_invite_only_by_stream_name(stream_name)) {
+                    stream_icon = $("<i>", {class: "fa fa-lock"});
+                } else if (stream_data.is_web_public_by_stream_name(stream_name)) {
+                    stream_icon = $("<i>", {class: "fa fa-globe"});
+                }
+                $(this).html("<span class='icon'></span><span class='text'></span>");
+                $(this).find("span.icon").html(stream_icon);
+                $(this)
+                    .find("span.text")
+                    .text(" " + stream_name);
             }
         }
     });
@@ -150,7 +160,18 @@ export const update_elements = (content) => {
                 // stream_data.maybe_get_stream_name might return
                 // undefined.  Otherwise, display the current stream name.
                 const text = $(this).text();
-                $(this).text("#" + stream_name + text.slice(text.indexOf(" > ")));
+                let stream_icon = "#";
+                if (stream_data.is_invite_only_by_stream_name(stream_name)) {
+                    stream_icon = $("<i>", {class: "fa fa-lock"});
+                } else if (stream_data.is_web_public_by_stream_name(stream_name)) {
+                    stream_icon = $("<i>", {class: "fa fa-globe"});
+                }
+                $(this).empty();
+                $(this).html("<span class='icon'></span><span class='text'></span>");
+                $(this).find("span.icon").html(stream_icon);
+                $(this)
+                    .find("span.text")
+                    .text(" " + stream_name + text.slice(text.indexOf(" > ")));
             }
         }
     });
